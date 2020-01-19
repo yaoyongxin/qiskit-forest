@@ -1,6 +1,6 @@
 # This code is part of quantastica.qiskit_forest
 #
-# (C) Copyright Quantastica 2019. 
+# (C) Copyright Quantastica 2019.
 # https://quantastica.com/
 #
 # This code is licensed under the Apache License, Version 2.0. You may
@@ -27,7 +27,7 @@ from qiskit.providers import BaseJob, JobStatus, JobError
 from qiskit.qobj import validate_qobj_against_schema
 from qiskit.result import Result
 
-""" 
+"""
 In order to speed up compiling of pyquil code we need to import
 pyquil packages outside of compile/exec loop
 """
@@ -101,7 +101,7 @@ class ForestJob(BaseJob):
         for c in counts:
             bin="%d%s"%(c,bin)
         return hex(int(bin,2))
-        
+
     @staticmethod
     def _convert_counts(counts):
         ret = dict()
@@ -113,12 +113,12 @@ class ForestJob(BaseJob):
                 ret[hexkey]=1
         return ret
 
-    @staticmethod     
+    @staticmethod
     def _execute_rigetti(qobj, shots, lattice_name, as_qvm):
 
-        conversion_options = { "all_experiments": False, 
-            "create_exec_code": False, 
-            "lattice": lattice_name, 
+        conversion_options = { "all_experiments": False,
+            "create_exec_code": False,
+            "lattice": lattice_name,
             "as_qvm": as_qvm,
             "shots": shots }
 
@@ -152,11 +152,11 @@ class ForestJob(BaseJob):
             counts = ForestJob._convert_counts(counts)
             return { "counts": counts }
 
-    def _run_with_rigetti(self):            
+    def _run_with_rigetti(self):
         qobj_dict = self._qobj.to_dict()
         shots = qobj_dict['config']['shots']
         res = ForestJob._execute_rigetti(
-            self._qobj, 
+            self._qobj,
             shots,
             self._lattice_name,
             self._as_qvm)
@@ -177,23 +177,24 @@ class ForestJob(BaseJob):
             data['counts'] = res['counts']
 
         self._result = {
-            'success': True, 
-            'backend_name': qobj_header['backend_name'], 
-            'qobj_id': qobjid ,
-            'backend_version': rawversion, 
+            'success': True,
+            'backend_name': self._backend.name(),
+            # qobj_header['backend_name'] can be empty.
+            'qobj_id': qobjid,
+            'backend_version': rawversion,
             'header': qobj_header,
-            'job_id': self._job_id, 
+            'job_id': self._job_id,
             'results': [
                 {
-                    'success': True, 
-                    'meas_level': 2, 
-                    'shots': shots, 
-                    'data': data, 
-                    'header': exp_header, 
-                    'status': 'DONE', 
-                    'name': expname, 
+                    'success': True,
+                    'meas_level': 2,
+                    'shots': shots,
+                    'data': data,
+                    'header': exp_header,
+                    'status': 'DONE',
+                    'name': expname,
                     'seed_simulator': 0
                 }
-                ], 
+                ],
             'status': 'COMPLETED'
         }

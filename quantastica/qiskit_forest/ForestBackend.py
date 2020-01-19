@@ -75,7 +75,8 @@ class ForestBackend(BaseBackend):
     def name(self):
         backend_name = "Forest"
         if self._lattice_name is not None:
-            backend_name += "_" + self._lattice_name
+            # Qiskit convention. Use starting string for identification.
+            backend_name = f"{self._lattice_name}_{backend_name}"
         return backend_name
 
 
